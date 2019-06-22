@@ -1,11 +1,15 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('User', {
-    email: {
+  const Location = sequelize.define('Location', {
+    address: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    password_digest: {
+    lat: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    long: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -13,18 +17,9 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    image_path: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    id_document: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    phone: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
   });
-  return User;
+  Location.associate = function(models) {
+    // associations can be defined here
+  };
+  return Location;
 };

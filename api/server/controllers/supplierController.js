@@ -1,4 +1,4 @@
-import UserService from '../services/UserService';
+import UserService from '../services/userService';
 import Util from '../utils/Utils';
 
 const util = new Util();
@@ -20,8 +20,7 @@ class UserController {
   }
 
   static async addUser(req, res) {
-    if (!req.body.email || !req.body.password_digest || !req.body.name
-        || !req.body.image_path || !req.body.id_document || !req.body.phone) {
+    if (!req.body.company_id) {
       util.setError(400, 'Please provide complete details');
       return util.send(res);
     }

@@ -1,7 +1,8 @@
 import config from 'dotenv';
 import express from 'express';
 import bodyParser from 'body-parser';
-import userRoutes from './server/routes/UserRoutes';
+import userRoutes from './server/routes/userRoutes';
+import finalUserRoutes from './server/routes/finalUserRoutes';
 
 config.config();
 
@@ -13,6 +14,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const port = process.env.PORT || 8000;
 
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/final_users', finalUserRoutes);
 
 // when a random route is inputed
 app.get('*', (req, res) => res.status(200).send({
