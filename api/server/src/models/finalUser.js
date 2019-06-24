@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = (sequelize, DataTypes) => {
   const FinalUser = sequelize.define('FinalUser', {
     gender: {
@@ -8,12 +9,21 @@ module.exports = (sequelize, DataTypes) => {
     birthdate: {
       type: DataTypes.DATE,
       allowNull: false,
-    }
+    },
+    UserId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true,
+      references: {
+        model: 'Users',
+        key: 'id'
+      },
+    },
   });
 
-  /*FinalUser.associate = function(models) {
+  FinalUser.associate = function(models) {
     FinalUser.belongsTo(models.User);
-  };*/
+  };
 
   return FinalUser;
 };

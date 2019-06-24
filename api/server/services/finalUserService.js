@@ -2,29 +2,27 @@ import database from '../src/models';
 
 class FinalUserService {
   static async getAllFinalUsers() {
-    try {
-      return await database.FinalUser.findAll();
-    } catch (error) {
-      throw error;
-    }
+    return database.FinalUser.findAll({
+      attributes: ['id', 'gender', 'birthdate'],
+      include: [{
+          model: database.User,
+          attributes: ['id', 'email', 'name', 'image_path', 'id_document', 'phone']
+      }]
+    }).catch(function(error) {throw error});
   }
 
-  static async addFinalUser(newFinalUser) {
-    try {
-      return await database.FinalUser.create(newFinalUser);
-    } catch (error) {
-      throw error;
-    }
+  static addFinalUser(newFinalUser) {
+    return database.FinalUser.create(newFinalUser).catch(function(error) {throw error});
   }
 
-  static async updateFinalUser(id, updateFinalUser) {
+  static updateFinalUser(id, updateFinalUser) {
     try {
-      const finaluserToUpdate = await database.FinalUser.findOne({
+      const finalUserToUpdate = database.FinalUser.findOne({
         where: { id: Number(id) }
       });
 
-      if (finaluserToUpdate) {
-        await database.FinalUser.update(updateFinalUser, { where: { id: Number(id) } });
+      if (finalUserToUpdate) {
+        database.FinalUser.update(updateFinalUser, { where: { id: Number(id) } });
 
         return updateFinalUser;
       }
@@ -34,10 +32,15 @@ class FinalUserService {
     }
   }
 
-  static async getAFinalUser(id) {
+  static getAFinalUser(id) {
     try {
-      const theFinalUser = await database.FinalUser.findOne({
-        where: { id: Number(id) }
+      const theFinalUser = database.FinalUser.findOne({
+        where: { id: Number(id) },
+        attributes: ['id', 'gender', 'birthdate'],
+        include: [{
+            model: database.User,
+            attributes: ['id', 'email', 'name', 'image_path', 'id_document', 'phone']
+        }],
       });
 
       return theFinalUser;
@@ -46,12 +49,12 @@ class FinalUserService {
     }
   }
 
-  static async deleteFinalUser(id) {
+  static deleteFinalUser(id) {
     try {
-      const finaluserToDelete = await database.FinalUser.findOne({ where: { id: Number(id) } });
+      const finalUserToDelete = database.FinalUser.findOne({ where: { id: Number(id) } });
 
-      if (finaluserToDelete) {
-        const deletedFinalUser = await database.FinalUser.destroy({
+      if (finalUserToDelete) {
+        const deletedFinalUser = database.FinalUser.destroy({
           where: { id: Number(id) }
         });
         return deletedFinalUser;

@@ -1,30 +1,23 @@
 import database from '../src/models';
 
 class LocationService {
-  static async getAllLocations() {
-    try {
-      return await database.Location.findAll();
-    } catch (error) {
-      throw error;
-    }
+  static getAllLocations() {
+    return  database.Location.findAll().catch(error => {throw error});
   }
 
-  static async addLocation(newLocation) {
-    try {
-      return await database.Location.create(newLocation);
-    } catch (error) {
-      throw error;
-    }
+  static addLocation(newLocation) {
+    console.log(newLocation)
+    return database.Location.create(newLocation).catch(error => {throw error});
   }
 
-  static async updateLocation(id, updateLocation) {
+  static updateLocation(id, updateLocation) {
     try {
-      const locationToUpdate = await database.Location.findOne({
+      const locationToUpdate = database.Location.findOne({
         where: { id: Number(id) }
       });
 
       if (locationToUpdate) {
-        await database.Location.update(updateLocation, { where: { id: Number(id) } });
+        database.Location.update(updateLocation, { where: { id: Number(id) } });
 
         return updateLocation;
       }
@@ -34,9 +27,9 @@ class LocationService {
     }
   }
 
-  static async getALocation(id) {
+  static getALocation(id) {
     try {
-      const theLocation = await database.Location.findOne({
+      const theLocation = database.Location.findOne({
         where: { id: Number(id) }
       });
 
@@ -46,12 +39,12 @@ class LocationService {
     }
   }
 
-  static async deleteLocation(id) {
+  static deleteLocation(id) {
     try {
-      const locationToDelete = await database.Location.findOne({ where: { id: Number(id) } });
+      const locationToDelete = database.Location.findOne({ where: { id: Number(id) } });
 
       if (locationToDelete) {
-        const deletedLocation = await database.Location.destroy({
+        const deletedLocation = database.Location.destroy({
           where: { id: Number(id) }
         });
         return deletedLocation;

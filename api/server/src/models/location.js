@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
+    }
   });
   Location.associate = function(models) {
     // associations can be defined here

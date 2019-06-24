@@ -1,30 +1,28 @@
 import database from '../src/models';
 
 class DelivererService {
-  static async getAllDeliverers() {
-    try {
-      return await database.Deliverer.findAll();
-    } catch (error) {
-      throw error;
-    }
+  static getAllDeliverers() {
+    return  database.Deliverer.findAll({
+      attributes: ['id', 'birthdate'],
+      include: [{
+          model: database.User,
+          attributes: ['id', 'email', 'name', 'image_path', 'id_document', 'phone']
+      }]
+    }).catch(function(error) {throw error});
   }
 
-  static async addDeliverer(newDeliverer) {
-    try {
-      return await database.Deliverer.create(newDeliverer);
-    } catch (error) {
-      throw error;
-    }
+  static addDeliverer(newDeliverer) {
+    return database.Deliverer.create(newDeliverer).catch(function(error) {throw error});
   }
 
-  static async updateDeliverer(id, updateDeliverer) {
+  static updateDeliverer(id, updateDeliverer) {
     try {
-      const delivererToUpdate = await database.Deliverer.findOne({
+      const delivererToUpdate = database.Deliverer.findOne({
         where: { id: Number(id) }
       });
 
       if (delivererToUpdate) {
-        await database.Deliverer.update(updateDeliverer, { where: { id: Number(id) } });
+        database.Deliverer.update(updateDeliverer, { where: { id: Number(id) } });
 
         return updateDeliverer;
       }
@@ -34,10 +32,15 @@ class DelivererService {
     }
   }
 
-  static async getADeliverer(id) {
+  static getADeliverer(id) {
     try {
-      const theDeliverer = await database.Deliverer.findOne({
-        where: { id: Number(id) }
+      const theDeliverer = database.Deliverer.findOne({
+        where: { id: Number(id) },
+        attributes: ['id', 'birthdate'],
+        include: [{
+            model: database.User,
+            attributes: ['id', 'email', 'name', 'image_path', 'id_document', 'phone']
+        }]
       });
 
       return theDeliverer;
@@ -46,12 +49,12 @@ class DelivererService {
     }
   }
 
-  static async deleteDeliverer(id) {
+  static deleteDeliverer(id) {
     try {
-      const delivererToDelete = await database.Deliverer.findOne({ where: { id: Number(id) } });
+      const delivererToDelete = database.Deliverer.findOne({ where: { id: Number(id) } });
 
       if (delivererToDelete) {
-        const deletedDeliverer = await database.Deliverer.destroy({
+        const deletedDeliverer = database.Deliverer.destroy({
           where: { id: Number(id) }
         });
         return deletedDeliverer;

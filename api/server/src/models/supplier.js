@@ -5,9 +5,20 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
     },
+    UserId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true,
+      references: {
+        model: 'Users',
+        key: 'id'
+      },
+    },
   });
+
   Supplier.associate = function(models) {
-    // associations can be defined here
+    Supplier.belongsTo(models.User);
   };
+
   return Supplier;
 };

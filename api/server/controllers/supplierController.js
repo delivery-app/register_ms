@@ -1,63 +1,57 @@
+import SupplierService from '../services/supplierService';
 import UserService from '../services/userService';
+import UserController from './userController'; 
 import Util from '../utils/Utils';
 
 const util = new Util();
 
-class UserController {
-  static async getAllUsers(req, res) {
-    try {
-      const allUsers = await UserService.getAllUsers();
-      if (allUsers.length > 0) {
-        util.setSuccess(200, 'Users retrieved', allUsers);
+class SupplierController {
+  static async getAllSuppliers(req, res) {
+    SupplierService.getAllSuppliers()
+    .then(function(allSuppliers) {
+      if (allSuppliers.length > 0) {
+        util.setSuccess(200, 'Suppliers retrieved', allSuppliers);
       } else {
-        util.setSuccess(200, 'No user found');
+        util.setSuccess(200, 'No supplier found');
       }
       return util.send(res);
-    } catch (error) {
+    
+    }).catch(function(error) {
       util.setError(400, error);
       return util.send(res);
-    }
+    });
   }
 
-  static async addUser(req, res) {
-    if (!req.body.company_id) {
+  static addSupplier(req, res) {
+    if (!req.body.supplier.gender || !req.body.supplier.birthdate) {
       util.setError(400, 'Please provide complete details');
       return util.send(res);
     }
-    const newUser = req.body;
-    try {
-      const createdUser = await UserService.addUser(newUser);
-      util.setSuccess(201, 'User Added!', createdUser);
-      return util.send(res);
-    } catch (error) {
+
+    const newSupplier = req.body.supplier;
+    UserController.addUser(req, res)
+    .then(function(user){
+      newSupplier.UserId = user.dataValues.id; 
+
+      SupplierService.addSupplier(newSupplier)
+        .then(function(createdSupplier){
+          util.setSuccess(201, 'Supplier Added!', createdSupplier);
+          return util.send(res);
+
+        }).catch(function(error){
+          util.setError(400, error.message);
+          return util.send(res);
+        });
+    }).catch(function(error){
       util.setError(400, error.message);
       return util.send(res);
-    }
+    });
   }
 
-  static async updatedUser(req, res) {
-    const alteredUser = req.body;
+  static async updatedSupplier(req, res) {
+    const alteredSupplier = req.body.supplier;
     const { id } = req.params;
-    if (!Number(id)) {
-      util.setError(400, 'Please input a valid numeric value');
-      return util.send(res);
-    }
-    try {
-      const updateUser = await UserService.updateUser(id, alteredUser);
-      if (!updateUser) {
-        util.setError(404, `Cannot find user with the id: ${id}`);
-      } else {
-        util.setSuccess(200, 'User updated', updateUser);
-      }
-      return util.send(res);
-    } catch (error) {
-      util.setError(404, error);
-      return util.send(res);
-    }
-  }
-
-  static async getAUser(req, res) {
-    const { id } = req.params;
+    const alteredUser = req.body.user;
 
     if (!Number(id)) {
       util.setError(400, 'Please input a valid numeric value');
@@ -65,21 +59,50 @@ class UserController {
     }
 
     try {
-      const theUser = await UserService.getAUser(id);
-
-      if (!theUser) {
-        util.setError(404, `Cannot find user with the id ${id}`);
+      const updateSupplier = await SupplierService.updateSupplier(id, alteredSupplier);
+      
+      if (!updateSupplier) {
+        util.setError(404, `Cannot find supplier with the id: ${id}`);
       } else {
-        util.setSuccess(200, 'Found User', theUser);
+        
+        SupplierService.getASupplier(id)
+        .then(function(supplier) {
+          let mainUserId = supplier.dataValues.User.id;
+          const updatedUser = UserService.updateUser(mainUserId, alteredUser);
+          util.setSuccess(200, 'Supplier updated', {updateSupplier, updatedUser});
+          return util.send(res);
+          
+        }).catch(function() {
+          util.setError(404, `Cannot find supplier with the id: ${id}`);
+          return util.send(res);    
+        });
       }
-      return util.send(res);
     } catch (error) {
       util.setError(404, error);
       return util.send(res);
     }
   }
 
-  static async deleteUser(req, res) {
+  static async getASupplier(req, res) {
+    const { id } = req.params;
+
+    if (!Number(id)) {
+      util.setError(400, 'Please input a valid numeric value');
+      return util.send(res);
+    }
+
+    SupplierService.getASupplier(id)
+    .then(function(theSupplier) {
+      util.setSuccess(200, 'Found Supplier', theSupplier);
+      return util.send(res);
+    
+    }).catch(function() {
+      util.setError(404, `Cannot find supplier with the id ${id}`);
+      return util.send(res);
+    });
+  }
+
+  static deleteSupplier(req, res) {
     const { id } = req.params;
 
     if (!Number(id)) {
@@ -87,20 +110,24 @@ class UserController {
       return util.send(res);
     }
 
-    try {
-      const userToDelete = await UserService.deleteUser(id);
+    SupplierService.getASupplier(id)
+    .then(function(supplier) {
+      let mainUserId = supplier.dataValues.User.id;
+      
+      UserService.deleteUser(mainUserId)
+      .then(function() {
+        util.setSuccess(200, 'Final user deleted');
+        return util.send(res);
 
-      if (userToDelete) {
-        util.setSuccess(200, 'User deleted');
-      } else {
-        util.setError(404, `User with the id ${id} cannot be found`);
-      }
+      }).catch(function(error) {
+        util.setError(400, error.message);
+        return util.send(res);
+      });
+    }).catch(function() {
+      util.setError(404, `Cannot find supplier with the id: ${id}`);
       return util.send(res);
-    } catch (error) {
-      util.setError(400, error);
-      return util.send(res);
-    }
+    });
   }
 }
 
-export default UserController;
+export default SupplierController;

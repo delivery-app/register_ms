@@ -1,30 +1,24 @@
 import database from '../src/models';
 
 class UserService {
-  static async getAllUsers() {
-    try {
-      return await database.User.findAll();
-    } catch (error) {
-      throw error;
-    }
+  static getAllUsers() {
+    return database.User.findAll({
+      attributes: ['id', 'email', 'name', 'image_path', 'id_document', 'phone'],
+    }).catch(function(error) {throw error});
   }
 
-  static async addUser(newUser) {
-    try {
-      return await database.User.create(newUser);
-    } catch (error) {
-      throw error;
-    }
+  static addUser(newUser) {
+    return database.User.create(newUser).catch(function(error) {throw error});
   }
 
-  static async updateUser(id, updateUser) {
+  static updateUser(id, updateUser) {
     try {
-      const userToUpdate = await database.User.findOne({
+      const userToUpdate = database.User.findOne({
         where: { id: Number(id) }
       });
 
       if (userToUpdate) {
-        await database.User.update(updateUser, { where: { id: Number(id) } });
+        database.User.update(updateUser, { where: { id: Number(id) } });
 
         return updateUser;
       }
@@ -34,10 +28,11 @@ class UserService {
     }
   }
 
-  static async getAUser(id) {
+  static getAUser(id) {
     try {
-      const theUser = await database.User.findOne({
-        where: { id: Number(id) }
+      const theUser = database.User.findOne({
+        where: { id: Number(id) },
+        attributes: ['id', 'email', 'name', 'image_path', 'id_document', 'phone'],
       });
 
       return theUser;
@@ -46,12 +41,12 @@ class UserService {
     }
   }
 
-  static async deleteUser(id) {
+  static deleteUser(id) {
     try {
-      const userToDelete = await database.User.findOne({ where: { id: Number(id) } });
+      const userToDelete = database.User.findOne({ where: { id: Number(id) } });
 
       if (userToDelete) {
-        const deletedUser = await database.User.destroy({
+        const deletedUser = database.User.destroy({
           where: { id: Number(id) }
         });
         return deletedUser;

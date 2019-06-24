@@ -22,15 +22,17 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }/*,
-      userId: {
+      },
+      UserId: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        unique: true,
         references: {
           model: 'Users',
           key: 'id'
         },
-      },*/
+        onDelete: 'cascade',
+      },
     });
   },
   down: (queryInterface, Sequelize) => {

@@ -1,30 +1,28 @@
 import database from '../src/models';
 
 class SupplierService {
-  static async getAllSuppliers() {
-    try {
-      return await database.Supplier.findAll();
-    } catch (error) {
-      throw error;
-    }
+  static getAllSuppliers() {
+    return  database.Supplier.findAll({
+      attributes: ['id', 'company_id'],
+      include: [{
+          model: database.User,
+          attributes: ['id', 'email', 'name', 'image_path', 'id_document', 'phone']
+      }]
+    }).catch(function(error) {throw error});
   }
 
-  static async addSupplier(newSupplier) {
-    try {
-      return await database.Supplier.create(newSupplier);
-    } catch (error) {
-      throw error;
-    }
+  static addSupplier(newSupplier) {
+    return database.Supplier.create(newSupplier).catch(function(error) {throw error});
   }
 
-  static async updateSupplier(id, updateSupplier) {
+  static updateSupplier(id, updateSupplier) {
     try {
-      const supplierToUpdate = await database.Supplier.findOne({
+      const supplierToUpdate = database.Supplier.findOne({
         where: { id: Number(id) }
       });
 
       if (supplierToUpdate) {
-        await database.Supplier.update(updateSupplier, { where: { id: Number(id) } });
+        database.Supplier.update(updateSupplier, { where: { id: Number(id) } });
 
         return updateSupplier;
       }
@@ -34,10 +32,15 @@ class SupplierService {
     }
   }
 
-  static async getASupplier(id) {
+  static getASupplier(id) {
     try {
-      const theSupplier = await database.Supplier.findOne({
-        where: { id: Number(id) }
+      const theSupplier = database.Supplier.findOne({
+        where: { id: Number(id) },
+        attributes: ['id', 'company_id'],
+        include: [{
+            model: database.User,
+            attributes: ['id', 'email', 'name', 'image_path', 'id_document', 'phone']
+        }]
       });
 
       return theSupplier;
@@ -46,12 +49,12 @@ class SupplierService {
     }
   }
 
-  static async deleteSupplier(id) {
+  static deleteSupplier(id) {
     try {
-      const supplierToDelete = await database.Supplier.findOne({ where: { id: Number(id) } });
+      const supplierToDelete = database.Supplier.findOne({ where: { id: Number(id) } });
 
       if (supplierToDelete) {
-        const deletedSupplier = await database.Supplier.destroy({
+        const deletedSupplier = database.Supplier.destroy({
           where: { id: Number(id) }
         });
         return deletedSupplier;
