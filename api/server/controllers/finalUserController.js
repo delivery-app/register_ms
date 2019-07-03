@@ -22,7 +22,10 @@ class FinalUserController {
   }
 
   static async addFinalUser(req, res) {
-    if (!req.body.finalUser.gender || !req.body.finalUser.birthdate) {
+    if (!req.body.finalUser.gender || !req.body.finalUser.birthdate|| 
+      !req.body.user.email || !req.body.user.password_digest || 
+      !req.body.user.name || !req.body.user.image_path || 
+      !req.body.user.id_document || !req.body.user.phone) {
       util.setError(400, 'Please provide complete details');
       return util.send(res);
     }

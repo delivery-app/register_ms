@@ -31,7 +31,25 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      }
+      },
+      FinalUserId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'FinalUsers',
+          key: 'id'
+        },
+        onDelete: 'cascade',
+      },
+      SupplierId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+        references: {
+          model: 'Suppliers',
+          key: 'id'
+        },
+        onDelete: 'cascade',
+      },
     });
   },
   down: (queryInterface, Sequelize) => {

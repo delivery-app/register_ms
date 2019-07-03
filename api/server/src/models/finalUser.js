@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
 
   FinalUser.associate = function(models) {
     FinalUser.belongsTo(models.User);
+    FinalUser.hasMany(models.Location, { onDelete: 'cascade', hooks: true });
   };
 
   return FinalUser;

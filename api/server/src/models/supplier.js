@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Supplier.associate = function(models) {
     Supplier.belongsTo(models.User);
+    Supplier.hasOne(models.Location, { onDelete: 'cascade', hooks: true });
   };
 
   return Supplier;

@@ -16,10 +16,27 @@ module.exports = (sequelize, DataTypes) => {
     name: {
       type: DataTypes.STRING,
       allowNull: false,
-    }
+    },
+    FinalUserId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'FinalUsers',
+        key: 'id'
+      },
+    },
+    SupplierId: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'Suppliers',
+        key: 'id'
+      },
+    },
   });
   Location.associate = function(models) {
-    // associations can be defined here
+    Location.belongsTo(models.FinalUser);
+    Location.belongsTo(models.Supplier);
   };
   return Location;
 };

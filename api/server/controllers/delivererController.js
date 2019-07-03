@@ -1,6 +1,5 @@
 import DelivererService from '../services/delivererService';
 import UserService from '../services/userService';
-import UserController from './userController'; 
 import Util from '../utils/Utils';
 
 const util = new Util();
@@ -22,14 +21,18 @@ class DelivererController {
     });
   }
 
-  static addDeliverer(req, res) {
-    if (!req.body.deliverer.gender || !req.body.deliverer.birthdate) {
+  static async addDeliverer(req, res) {
+    if (!req.body.deliverer.gender || !req.body.deliverer.birthdate|| 
+      !req.body.user.email || !req.body.user.password_digest || 
+      !req.body.user.name || !req.body.user.image_path || 
+      !req.body.user.id_document || !req.body.user.phone) {
       util.setError(400, 'Please provide complete details');
       return util.send(res);
     }
 
     const newDeliverer = req.body.deliverer;
-    UserController.addUser(req, res)
+    const newUser = req.body.user
+    UserService.addUser(newUser)
     .then(function(user){
       newDeliverer.UserId = user.dataValues.id; 
 
@@ -116,7 +119,7 @@ class DelivererController {
       
       UserService.deleteUser(mainUserId)
       .then(function() {
-        util.setSuccess(200, 'Final user deleted');
+        util.setSuccess(200, 'Deliverer deleted');
         return util.send(res);
 
       }).catch(function(error) {

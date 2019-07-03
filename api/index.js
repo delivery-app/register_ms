@@ -5,6 +5,7 @@ import userRoutes from './server/routes/userRoutes';
 import finalUserRoutes from './server/routes/finalUserRoutes';
 import delivererRoutes from './server/routes/delivererRoutes';
 import supplierRoutes from './server/routes/supplierRoutes';
+import locationRoutes from './server/routes/locationRoutes';
 
 config.config();
 
@@ -19,6 +20,7 @@ app.use('/user-api/users', userRoutes);
 app.use('/user-api/final_users', finalUserRoutes);
 app.use('/user-api/deliverers', delivererRoutes);
 app.use('/user-api/suppliers', supplierRoutes);
+app.use('/user-api/locations', locationRoutes);
 
 // when a random route is inputed
 app.get('*', (req, res) => res.status(200).send({
