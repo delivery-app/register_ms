@@ -41,6 +41,23 @@ class UserService {
     }
   }
 
+  static checkUser(email, password_digest) {
+    try {
+      const user = database.User.findOne({
+        where: { email: email, password_digest: password_digest },
+        attributes: ['id', 'email', 'name', 'image_path', 'id_document', 'phone'],
+        include: [{
+            model: database.FinalUser,
+            attributes: ['id', 'gender', 'birthdate']
+        }],
+      });
+      
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+  
   static deleteUser(id) {
     try {
       const userToDelete = database.User.findOne({ where: { id: Number(id) } });

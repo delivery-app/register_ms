@@ -10,7 +10,7 @@ class UserController {
       if (allUsers.length > 0) {
         util.setSuccess(200, 'Users retrieved', allUsers);
       } else {
-        util.setSuccess(200, 'No user found');
+        util.setSuccess(404, 'No user found');
       }
       return util.send(res);
 
@@ -79,6 +79,30 @@ class UserController {
     
     }).catch(function() {
       util.setError(404, `Cannot find user with the id ${id}`);
+      return util.send(res);
+    });
+  }
+
+  static isUser(req, res) {
+    if (!req.body.email || !req.body.password_digest) {
+      util.setError(400, 'Please provide complete details for login');
+      return util.send(res);
+    }
+
+    const {email, password_digest} = req.body
+    
+    UserService.checkUser(email, password_digest)
+    .then(function(user){
+      if (user){
+        util.setSuccess(200, 'Found User', user);
+        return util.send(res);
+      } else {
+        util.setError(404, 'Wrong email or password');
+        return util.send(res);
+      }
+    
+    }).catch(function(error) {
+      util.setError(400, error.message);
       return util.send(res);
     });
   }

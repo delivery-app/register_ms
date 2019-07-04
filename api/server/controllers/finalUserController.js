@@ -11,7 +11,7 @@ class FinalUserController {
       if (allFinalUsers.length > 0) {
         util.setSuccess(200, 'FinalUsers retrieved', allFinalUsers);
       } else {
-        util.setSuccess(200, 'No finaluser found');
+        util.setSuccess(404, 'No finaluser found');
       }
       return util.send(res);
     
@@ -131,6 +131,7 @@ class FinalUserController {
       return util.send(res);
     });
   }
+
 }
 
 export default FinalUserController;
