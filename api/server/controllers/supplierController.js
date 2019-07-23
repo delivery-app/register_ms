@@ -22,7 +22,7 @@ class SupplierController {
   }
 
   static async addSupplier(req, res) {
-    if (!req.body.supplier.gender || !req.body.supplier.birthdate|| 
+    if (!req.body.supplier.company_id|| 
       !req.body.user.email || !req.body.user.password_digest || 
       !req.body.user.name || !req.body.user.image_path || 
       !req.body.user.id_document || !req.body.user.phone) {

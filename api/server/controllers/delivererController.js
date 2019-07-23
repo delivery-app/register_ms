@@ -22,7 +22,7 @@ class DelivererController {
   }
 
   static async addDeliverer(req, res) {
-    if (!req.body.deliverer.gender || !req.body.deliverer.birthdate|| 
+    if (!req.body.deliverer.birthdate|| 
       !req.body.user.email || !req.body.user.password_digest || 
       !req.body.user.name || !req.body.user.image_path || 
       !req.body.user.id_document || !req.body.user.phone) {
