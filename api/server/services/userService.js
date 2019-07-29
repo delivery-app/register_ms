@@ -1,4 +1,5 @@
 import database from '../src/models';
+import Hasher from '../utils/hasher';
 
 class UserService {
   static getAllUsers() {
@@ -7,8 +8,10 @@ class UserService {
     }).catch(function(error) {throw error});
   }
 
-  static addUser(newUser) {
-    return database.User.create(newUser).catch(function(error) {throw error});
+  static async addUser(newUser) {
+    var user = newUser;
+    user.password_digest = await Hasher.hashPass(newUser.password_digest);
+    return database.User.create(user).catch(function(error) {throw error});
   }
 
   static updateUser(id, updateUser) {
@@ -41,18 +44,23 @@ class UserService {
     }
   }
 
-  static checkUser(email, password_digest) {
+  static async checkUser(email, password_digest) {
     try {
-      const user = database.User.findOne({
-        where: { email: email, password_digest: password_digest },
-        attributes: ['id', 'email', 'name', 'image_path', 'id_document', 'phone'],
+      const user = await database.User.findOne({
+        where: { email: email },
+        attributes: ['id', 'email', 'name', 'image_path', 'id_document', 'phone', 'password_digest'],
         include: [{
             model: database.FinalUser,
             attributes: ['id', 'gender', 'birthdate']
         }],
       });
       
-      return user;
+      console.log(user);
+      var passMatch = await Hasher.hashCompare(password_digest, user.dataValues.password_digest);
+      if (passMatch) {
+        delete user.dataValues.password_digest;
+        return user;
+      } 
     } catch (error) {
       throw error;
     }

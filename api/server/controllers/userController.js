@@ -26,7 +26,7 @@ class UserController {
       util.setError(400, 'Please provide complete details');
       return util.send(res);
     }
-
+    
     const newUser = req.body.user;
     UserService.addUser(newUser)
     .then(function(createdUser) {

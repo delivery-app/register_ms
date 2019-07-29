@@ -14,7 +14,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-const port = process.env.PORT || 8000;
+const port = process.env.PORT || 3002;
 
 app.use('/user-api/users', userRoutes);
 app.use('/user-api/final_users', finalUserRoutes);
